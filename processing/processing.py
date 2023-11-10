@@ -1,8 +1,8 @@
-from Bio import SeqIO, Align, SeqRecord
+from Bio import SeqIO, Align
 import os
 import threading
 import multiprocessing
-from numba import njit, prange
+#from numba.openmp import openmp_context as openmp
 
 class Processing:
     def __init__(self, input_file, temp_file, output_file):
@@ -31,18 +31,16 @@ class Sequential(Processing):
             for j in range(i+1, len(sequences)):
                 alignment = aligner.align(sequences[i].seq, sequences[j].seq)
 
-                alignments.extend([alignment[0].sequences, alignment[1].sequences])
+                alignments.extend([alignment[0].__format__("fasta"), alignment[1].__format__("fasta")])
 
         with open(self.output_file, "w") as file:
             for aligned_pair in alignments:
-                file.write(str(aligned_pair[0]) + "\n")
-                file.write(str(aligned_pair[1]) + "\n")
+                file.write(str(aligned_pair) + "\n")
             file.close()
 
     def process(self):
         self.convert_genbank_to_fasta()
         self.perform_alignment()
-        self.cleanup_files()
 
 class Parallel(Processing):
     """ Faz o processamento de dados de modo paralelo """
@@ -93,12 +91,11 @@ class Parallel(Processing):
             for k in range(j+1, len(sequences)):
                 alignment = aligner.align(sequences[j].seq, sequences[k].seq)
 
-                alignments.extend([alignment[0].sequences, alignment[k].sequences])
+                alignments.extend([alignment[0].__format__("fasta"), alignment[k].__format__("fasta")])
 
         with open(f"{self.output_file}_{i}", "w") as file:
             for aligned_pair in alignments:
-                file.write(str(aligned_pair[0]) + "\n")
-                file.write(str(aligned_pair[1]) + "\n")
+                file.write(str(aligned_pair) + "\n")
             file.close()
 
 class Multithread(Parallel):
@@ -119,22 +116,21 @@ class Multithread(Parallel):
         for thread in threads:
             thread.join()
 
-        self.cleanup_files()
+        self.join_files()
 
 class OpenMP(Parallel):
     """ Faz o processamento de dados utilizando OpenMP """
 
     def process(self):
+
         self.convert_genbank_to_fasta()
 
-        @njit(parallel=True)
-        def parallel_alignment():
-            for i in prange(self.parallel):
-                self.perform_alignment(i)
+        #with openmp("parallel"):
+        #    with openmp("schedule(static)"):
+        #        for i in range(self.parallel):
+        #            self.perform_alignment(i)
 
-        parallel_alignment()
-
-        self.cleanup_files()
+        self.join_files()
     
 class Multiprocess(Parallel):
     """ Faz o processamento de dados utilizando processos """
@@ -154,4 +150,4 @@ class Multiprocess(Parallel):
         for process in processes:
             process.join()
 
-        self.cleanup_files()
+        self.join_files()
