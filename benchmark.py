@@ -3,8 +3,8 @@ import csv
 import matplotlib.pyplot as plt
 from processing.processing import Sequential, OpenMP, Multithread, Multiprocess
 
-num_iter = 1
-num_rep = 1
+num_iter = 10000
+num_rep = 10
 filename = "benchmark.csv"
 results = []
 
