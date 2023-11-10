@@ -37,8 +37,8 @@ for cpu in range(1, 17, 2):
     thread_time = benchmark(thread, num_iter, num_rep)
     results.append(['Multithread', cpu, thread_time])
 
-    #omp_time = benchmark(omp, num_iter, num_rep)
-    #results.append(['OpenMP', cpu, omp_time])
+    omp_time = benchmark(omp, num_iter, num_rep)
+    results.append(['OpenMP', cpu, omp_time])
 
     process_time = benchmark(process, num_iter, num_rep)
     results.append(['Multiprocess', cpu, process_time])

@@ -2,7 +2,7 @@ from Bio import SeqIO, Align
 import os
 import threading
 import multiprocessing
-#from numba.openmp import openmp_context as openmp
+from numba.openmp import openmp_context as openmp
 
 class Processing:
     def __init__(self, input_file, temp_file, output_file):
@@ -125,10 +125,10 @@ class OpenMP(Parallel):
 
         self.convert_genbank_to_fasta()
 
-        #with openmp("parallel"):
-        #    with openmp("schedule(static)"):
-        #        for i in range(self.parallel):
-        #            self.perform_alignment(i)
+        with openmp("parallel"):
+            with openmp("schedule(static)"):
+                for i in range(self.parallel):
+                    self.perform_alignment(i)
 
         self.join_files()
     
