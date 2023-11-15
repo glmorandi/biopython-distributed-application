@@ -1,6 +1,13 @@
 from tcp_client import TCPClient
 
-if __name__ == "__main__":
+def main():
+    """
+    Função principal que inicia o cliente TCP e envia um arquivo para o servidor.
+
+    O usuário deve digitar o modo de operação desejado (sequencial, multithread, OpenMP ou multiprocess),
+    a quantidade de threads/processos para utilizar, o local do arquivo para ser enviado e o local do arquivo
+    para ser recebido.
+    """
     host = "127.0.0.1"
     port = 31337
     client = TCPClient(host, port)
@@ -29,3 +36,6 @@ if __name__ == "__main__":
     client.close()
     
     exit()
+
+if __name__ == "__main__":
+    main()

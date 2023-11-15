@@ -14,6 +14,23 @@ output_file = "aligned.txt"
 
 
 def benchmark(method, num_iter, num_rep):
+    """
+    Realiza um benchmark do método fornecido, executando-o várias vezes e medindo o tempo total de execução.
+
+    Parametros:
+        method: O método a ser testado.
+        num_iter: O número de iterações a serem executadas em cada repetição.
+        num_rep: O número de repetições a serem executadas.
+
+    Retorno:
+        O tempo médio de execução do método em segundos.
+
+    Exemplo:
+        >>> from my_module import MyMethod
+        >>> method = MyMethod()
+        >>> benchmark(method, 1000, 10)
+        0.123456789
+    """
     total_time = 0
     for _ in range(num_rep):
         start_time = timeit.default_timer()
